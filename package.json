@@ -1,0 +1,13 @@
+{
+  "name": "backend-test",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "BiMeow test Backend",
+  "main": "src/server.js",
+  "author": "BiMeow",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
