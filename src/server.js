@@ -1,25 +1,26 @@
 import exitHook from "async-exit-hook";
 import express from "express";
-import { CLOSE_DB, CONNECT_DB, GET_DB } from "~/config/mongodb";
+import { env } from "~/config/environment";
+import { CLOSE_DB, CONNECT_DB } from "~/config/mongodb";
 
 const START_SERVER = async () => {
   const app = express();
 
-  const hostname = "localhost";
-  const port = 7998;
-
   app.get("/", async (req, res) => {
     console.log(
-      "BiMeow log db listCollections",
-      await GET_DB().listCollections().toArray()
+      "BiMeow log db env.APP_PORT, env.APP_HOST",
+      env.APP_PORT,
+      env.APP_HOST
     );
 
     res.end("<h1>Hello World!</h1><hr>");
   });
 
-  app.listen(port, hostname, () => {
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
-    console.log(`Hello BiMeow, I am running at http://${hostname}:${port}/`);
+    console.log(
+      `Hello BiMeow, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`
+    );
   });
 
   exitHook(() => {
