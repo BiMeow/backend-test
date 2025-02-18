@@ -1,16 +1,41 @@
-// const express = require("express");
+import exitHook from "async-exit-hook";
 import express from "express";
-const app = express();
+import { CLOSE_DB, CONNECT_DB, GET_DB } from "~/config/mongodb";
 
-const hostname = "localhost";
-const port = 3000;
+const START_SERVER = async () => {
+  const app = express();
 
-app.get("/", function (req, res) {
-  res.send("<h1>Hello World, BiMeow is here!</h1>");
-});
+  const hostname = "localhost";
+  const port = 7998;
 
-app.listen(port, hostname, () => {
-  console.log(
-    `BiMeow log running backend server at http://${hostname}:${port}`
-  );
-});
+  app.get("/", async (req, res) => {
+    console.log(
+      "BiMeow log db listCollections",
+      await GET_DB().listCollections().toArray()
+    );
+
+    res.end("<h1>Hello World!</h1><hr>");
+  });
+
+  app.listen(port, hostname, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Hello BiMeow, I am running at http://${hostname}:${port}/`);
+  });
+
+  exitHook(() => {
+    CLOSE_DB();
+    console.log("Exit app");
+  });
+};
+
+(async () => {
+  try {
+    console.log("BiMeow log connecting to db");
+    await CONNECT_DB();
+    console.log("BiMeow log connect db successfully");
+    START_SERVER();
+  } catch (error) {
+    console.log("BiMeow log connect db failed", error);
+    process.exit(0);
+  }
+})();
